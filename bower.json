@@ -1,0 +1,26 @@
+{
+  "name": "tree.js",
+  "version": "0.0.1",
+  "authors": [
+    "Robin Bressan <robin@marmelab.com>"
+  ],
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "genetic"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "requirejs": "~2.1.14",
+    "q": "1.0.1"
+  }
+}
