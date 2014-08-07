@@ -200,7 +200,7 @@ To rebuild the minified javascript you must run: `make build --always-make`.
 Tests
 -----
 
-Install dependencies: `bower install`.
+Install dependencies: `make install`.
 
 The library is unit tested. The tests are run on the minified javascript so you need to first build the library and the run: `make test-spec`.
 

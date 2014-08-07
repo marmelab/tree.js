@@ -1,26 +1,29 @@
 {
   "name": "tree.js",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "homepage": "https://github.com/marmelab/tree.js",
   "authors": [
     "Robin Bressan <robin@marmelab.com>"
   ],
-  "moduleType": [
-    "amd"
-  ],
+  "description": "Javascript librairy to build and manipulate hookable tree.",
+  "main": "tree.min.js",
   "keywords": [
-    "genetic"
+    "tree"
   ],
   "license": "MIT",
   "ignore": [
     "**/.*",
-    "node_modules",
     "bower_components",
-    "app/bower_components",
+    "node_modules",
     "test",
-    "tests"
+    "src",
+    "build",
+    "package.json"
   ],
   "dependencies": {
-    "requirejs": "~2.1.14",
     "q": "1.0.1"
+  },
+  "devDependencies": {
+    "almond": "~0.2.9"
   }
 }
