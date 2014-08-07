@@ -120,5 +120,9 @@ define(function(require) {
             expect(tree.find('/toto').find('/titi').data()).toBe(tree.find('/toto/titi').data());
             expect(toto.find('/titi').data()).not.toBe(tree.find('/toto/titi').data());
         });
+
+        it('should provide its factory',function() {
+            expect(tree.factory()).toBe(treeFactory);
+        });
     });
 });

@@ -1,10 +1,9 @@
-/*global describe,it,expect,beforeEach,jasmine,spyOn*/
+/*global describe,it,expect,beforeEach,jasmine,spyOn,runs,waitsFor*/
 
 define(function(require) {
     "use strict";
 
     var treeFactory,
-        hookableSync,
         tree,
         hookTree,
         data;
@@ -32,8 +31,7 @@ define(function(require) {
             treeFactory = require('model/tree');
             tree = treeFactory(data);
 
-            hookableSync = require('model/hookableSync');
-            hookTree = hookableSync(tree);
+            hookTree = require('model/hookable')(tree);
         });
 
         it('should always call the same method on the wrapped tree', function() {
@@ -47,23 +45,73 @@ define(function(require) {
             hookTree.data();
             expect(tree.data).toHaveBeenCalled();
 
-            hookTree.data({ name: 'test' })
+            hookTree.data({ name: 'test' });
             expect(tree.data).toHaveBeenCalledWith({ name: 'test' });
 
+
+            // APPEND
+            var appendResult,
+                appendedNode = treeFactory({ name: 'test'})
+            ;
             spyOn(tree, 'append');
-            hookTree.append({ name: 'test'}).done(function() {console.log('oui');
-                expect(tree.append).toHaveBeenCalledWith({ name: 'test' });
-                done();
+            runs(function() {
+                hookTree.append(appendedNode).then(function() {
+                    appendResult = 'resolved';
+                }, function() {
+                    appendResult = 'rejected';
+                });
             });
 
-            spyOn(tree, 'remove');
-            hookTree.remove();
-            expect(tree.remove).toHaveBeenCalled();
+            waitsFor(function() {
+                return !!appendResult;
+            });
 
+            runs(function() {
+                expect(appendResult).toEqual('resolved');
+                expect(tree.append).toHaveBeenCalledWith(appendedNode);
+            });
+
+            // REMOVE
+            var removeResult;
+            spyOn(tree, 'remove');
+            runs(function() {
+                hookTree.remove().then(function() {
+                    removeResult = 'resolved';
+                }, function() {
+                    removeResult = 'rejected';
+                });
+            });
+
+            waitsFor(function() {
+                return !!removeResult;
+            });
+
+            runs(function() {
+                expect(removeResult).toEqual('resolved');
+                expect(tree.remove).toHaveBeenCalledWith();
+            });
+
+            // MOVETO
+            var moveToResult,
+                targetNode = treeFactory({ name: 'test'})
+            ;
             spyOn(tree, 'moveTo');
-            var node = treeFactory({ name: 'test'});
-            hookTree.moveTo(node);
-            expect(tree.moveTo).toHaveBeenCalledWith(node);
+            runs(function() {
+                hookTree.moveTo(targetNode).then(function() {
+                    moveToResult = 'resolved';
+                }, function() {
+                    moveToResult = 'rejected';
+                });
+            });
+
+            waitsFor(function() {
+                return !!moveToResult;
+            });
+
+            runs(function() {
+                expect(moveToResult).toEqual('resolved');
+                expect(tree.moveTo).toHaveBeenCalledWith(targetNode);
+            });
 
             spyOn(tree, 'children').andCallThrough();
             hookTree.children();
@@ -84,29 +132,59 @@ define(function(require) {
             hookTree.attr('test');
             expect(tree.attr).toHaveBeenCalledWith('test');
 
+            // MOVETO
+            var cloneResult;
             spyOn(tree, 'clone');
-            hookTree.clone();
-            expect(tree.clone).toHaveBeenCalled();
+            runs(function() {
+                hookTree.clone().then(function() {
+                    cloneResult = 'resolved';
+                }, function() {
+                    cloneResult = 'rejected';
+                });
+            });
+
+            waitsFor(function() {
+                return !!cloneResult;
+            });
+
+            runs(function() {
+                expect(cloneResult).toEqual('resolved');
+                expect(tree.clone).toHaveBeenCalledWith();
+            });
+
         });
 
-        // it ('should call pre hook listeners before calling a method and post hooks listeners after', function() {
-        //     var i = 0;
+        it ('should call pre hook listeners before calling a method and post hooks listeners after', function() {
+            var i = 0;
 
-        //     hookTree.registerListener(hookTree.HOOK_PRE_APPEND, function(next, node) {
-        //         i += 5;
-        //         next();
-        //     });
+            hookTree.registerListener(hookTree.HOOK_PRE_APPEND, function(next, node) {
+                i += 5;
+                next();
+            });
 
-        //     hookTree.registerListener(hookTree.HOOK_POST_APPEND, function(next, node) {
-        //         i *= 2;
-        //         next();
-        //     });
+            hookTree.registerListener(hookTree.HOOK_POST_APPEND, function(next, node) {
+                i *= 2;
+                next();
+            });
 
-        //     hookTree.append(treeFactory({ name: 'test' })).then(function() {console.log(i);
-        //         expect(i).toBe(109); // ensure that listeners are called with the right order
-        //     });
+            var result;
+            runs(function() {
+                hookTree.append(treeFactory({ name: 'test' })).then(function() {
+                    i *= 3;
+                    result = 'resolved';
+                }, function() {
+                    result = 'rejected';
+                });
+            });
 
-        //     expect(i).toBe(109);
-        // });
+            waitsFor(function() {
+                return !!result;
+            });
+
+            runs(function() {
+                expect(result).toEqual('resolved');
+                expect(i).toBe(30); // ensure that listeners are called with the right order
+            });
+        });
     });
 });

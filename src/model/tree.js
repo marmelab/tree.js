@@ -160,6 +160,10 @@ define(function(require) {
                 setParent(copy);
 
                 return copy;
+            },
+
+            factory: function() {
+                return tree;
             }
         };
 

@@ -1,8 +1,8 @@
 ({
     baseUrl: "../src",
     name: "../almond.js",
-    include: ['model/tree'],
-    insertRequire: ['model/tree'],
+    include: ['main'],
+    insertRequire: ['main'],
     wrap: {
         startFile: '../build/start.frag',
         endFile: '../build/end.frag'
