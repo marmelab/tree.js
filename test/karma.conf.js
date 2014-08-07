@@ -5,15 +5,15 @@ module.exports = function (config) {
         basePath: '../',
         browsers: [process.env.CI ? 'PhantomJS' : 'Chrome'],
         files: [
-            {pattern: 'src/**/*.js', included: false},
+            //{pattern: 'src/**/*.js', included: false},
+            {pattern: 'tree.min.js', included: true},
+            {pattern: 'bower_components/q/q.js', included: true},
 
             // test files
-            {pattern: 'test/src/**/*.js', included: false},
+            {pattern: 'test/src/**/*.js', included: true},
 
-            {pattern: 'bower_components/q/q.js', included: false},
-
-            'test/main-test.js'
+            //'test/main-test.js'
         ],
-        frameworks: ['requirejs', 'jasmine'],
+        frameworks: ['jasmine'],
     });
 };

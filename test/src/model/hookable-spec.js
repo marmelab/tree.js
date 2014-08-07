@@ -1,10 +1,9 @@
-/*global describe,it,expect,beforeEach,jasmine,spyOn,runs,waitsFor*/
+/*global describe,it,expect,beforeEach,jasmine,spyOn,runs,waitsFor,Tree*/
 
-define(function(require) {
+(function() {
     "use strict";
 
-    var treeFactory,
-        tree,
+    var tree,
         hookTree,
         data;
 
@@ -28,10 +27,10 @@ define(function(require) {
                     }
                 ]
             };
-            treeFactory = require('model/tree');
-            tree = treeFactory(data);
 
-            hookTree = require('model/hookable')(tree);
+            tree = Tree.tree(data);
+
+            hookTree = Tree.hookable(tree);
         });
 
         it('should always call the same method on the wrapped tree', function() {
@@ -51,7 +50,7 @@ define(function(require) {
 
             // APPEND
             var appendResult,
-                appendedNode = treeFactory({ name: 'test'})
+                appendedNode = Tree.tree({ name: 'test'})
             ;
             spyOn(tree, 'append');
             runs(function() {
@@ -93,7 +92,7 @@ define(function(require) {
 
             // MOVETO
             var moveToResult,
-                targetNode = treeFactory({ name: 'test'})
+                targetNode = Tree.tree({ name: 'test'})
             ;
             spyOn(tree, 'moveTo');
             runs(function() {
@@ -169,7 +168,7 @@ define(function(require) {
 
             var result;
             runs(function() {
-                hookTree.append(treeFactory({ name: 'test' })).then(function() {
+                hookTree.append(Tree.tree({ name: 'test' })).then(function() {
                     i *= 3;
                     result = 'resolved';
                 }, function() {
@@ -187,4 +186,4 @@ define(function(require) {
             });
         });
     });
-});
+})();

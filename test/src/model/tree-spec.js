@@ -1,10 +1,9 @@
-/*global describe,it,expect,beforeEach,jasmine*/
+/*global describe,it,expect,beforeEach,jasmine,Tree*/
 
-define(function(require) {
+(function() {
     "use strict";
 
-    var treeFactory,
-        tree,
+    var tree,
         data;
 
     describe('Tree', function() {
@@ -27,8 +26,7 @@ define(function(require) {
                     }
                 ]
             };
-            treeFactory = require('model/tree');
-            tree = treeFactory(data);
+            tree = Tree.tree(data);
 
         });
 
@@ -80,7 +78,7 @@ define(function(require) {
         it('should append a node', function() {
             var toto = tree.find('/toto');
 
-            var node = treeFactory({
+            var node = Tree.tree({
                 name: 'new',
                 children: [
                     {
@@ -97,7 +95,7 @@ define(function(require) {
             var toto = tree.find('/toto/titi').remove();
             expect(toto.find('/titi')).toBeUndefined();
             expect(tree.find('/toto/titi')).toBeUndefined();
-            expect(tree.find('/toto/tata').append(treeFactory({ name: 'boum' })).parent().remove().find('/tata/boum')).toBeUndefined();
+            expect(tree.find('/toto/tata').append(Tree.tree({ name: 'boum' })).parent().remove().find('/tata/boum')).toBeUndefined();
         });
 
         it('should move a node', function() {
@@ -122,7 +120,7 @@ define(function(require) {
         });
 
         it('should provide its factory',function() {
-            expect(tree.factory()).toBe(treeFactory);
+            expect(tree.factory()).toBe(Tree.tree);
         });
     });
-});
+})();

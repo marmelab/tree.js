@@ -10,6 +10,6 @@
         module.exports = factory();
     } else {
          // Browser globals (root is window)
-        root.tree = factory();
+        root.Tree = factory();
     }
 }(this, function() {

@@ -3,6 +3,11 @@ define(function(require) {
 
     var configurable = require('../util/configurable');
 
+    /**
+     * Build `_parent` attribute on a tree and its children.
+     * @param {tree}   tree   The root
+     * @param {tree}   parent The parent to apply to the root (optionnal)
+     */
     function setParent(tree, parent) {
         var search = function(node, parent) {
             if (parent) {
@@ -21,15 +26,26 @@ define(function(require) {
         search(tree, parent);
     }
 
+    /**
+     * Will return a tree with method to manipulate it.
+     * @param  {object} data The raw tree as litteral object
+     * @return {object}      A tree
+     */
     return function tree (data) {
 
         var config = {
+            // The raw data can be updated by calling `data(object d)` on the tree`.
             data: data
         };
 
         setParent(data);
 
         var model = {
+            /**
+             * Will find a node in the tree.
+             * @param  {string} path The path of the node based on the current tree
+             * @return {undefined|tree}        The node
+             */
             find: function(path) {
                 var search = function (target, rootTree) {
                     if(target.length > 0) {
@@ -64,6 +80,11 @@ define(function(require) {
                 return search(target, config.data);
             },
 
+            /**
+             * Will append a node to the tree.
+             * @param  {tree} childNode The node to append
+             * @return {tree}           The child node
+             */
             append: function(childNode) {
                 if (!config.data.children) {
                     config.data.children = [];
@@ -76,6 +97,10 @@ define(function(require) {
                 return tree(childNodeData);
             },
 
+            /**
+             * Will remove the current tree from its parent.
+             * @return {undefined|tree} The parent of the tree
+             */
             remove: function() {
                 if (!config.data._parent) {
                     return undefined;
@@ -88,6 +113,11 @@ define(function(require) {
                 return model.parent();
             },
 
+            /**
+             * Will move the current tree to an other node.
+             * @param  {tree} destNode           The future parent of the tree
+             * @return {undefined|tree}          The moved tree
+             */
             moveTo: function(destNode) {
                 var parent = model.parent();
 
@@ -101,6 +131,10 @@ define(function(require) {
                 return model;
             },
 
+            /**
+             * Will return the children of the tree.
+             * @return {array} The children
+             */
             children: function() {
                 if (!config.data.children) {
                     return [];
@@ -111,7 +145,11 @@ define(function(require) {
                 });
             },
 
-            parent: function(parent) {
+            /**
+             * Will return the parent of the tree.
+             * @return {undefined|tree} The parent
+             */
+            parent: function() {
                 if (!config.data._parent) {
                     return undefined;
                 }
@@ -119,6 +157,10 @@ define(function(require) {
                 return tree(config.data._parent);
             },
 
+            /**
+             * Will return the path of the current node.
+             * @return {string} The path
+             */
             path: function() {
                 var path = config.data._parent ? [config.data.name] : [];
                 var search = function(node) {
@@ -131,10 +173,20 @@ define(function(require) {
                 return '/' + path.join('/');
             },
 
+            /**
+             * Will return the name of the current node.
+             * @return {string} The name
+             */
             name: function() {
                 return config.data.name;
             },
 
+            /**
+             * Will return or set an attribute on the current node.
+             * @param  {string} key   The name of the attribute
+             * @param  {mixed}  value The value of the attribute (optional)
+             * @return {mixed|tree}   The value of the attribute or the current node
+             */
             attr: function(key, value) {
                 if (!value) {
                     return config.data[key];
@@ -145,6 +197,13 @@ define(function(require) {
                 return model;
             },
 
+            /**
+             * Will clone the current node.
+             * When a node is cloned, it is extract from the current tree scope
+             * and become detached from its parent. That means calling `parent()`
+             * will return undefined.
+             * @return {tree} The cloned node
+             */
             clone: function() {
                 var clone = function(node) {
                     return tree(JSON.parse(JSON.stringify(node, function (key, value) {
@@ -162,6 +221,10 @@ define(function(require) {
                 return copy;
             },
 
+            /**
+             * Will return the tree factory
+             * @return Function
+             */
             factory: function() {
                 return tree;
             }
