@@ -182,7 +182,7 @@ There are 12 hooks available:
 
 To register a hook you need to call `registerListener(string hook, function listener)`:
 
-```
+```javascript
 hookableTree.registerListener(hookableTree.HOOK_PRE_APPEND, function(next, newNode) {
     // I am a hook listener, I will be triggered before any append operation.
 
@@ -200,7 +200,7 @@ hookableTree.registerListener(hookableTree.HOOK_PRE_APPEND, function(next, newNo
 
 Because of hooks, `append`, `remove`, `move`, `clone` will return promise, as show in this example:
 
-```
+```javascript
 hookableTree.append(Tree.tree({ name: 'spirou'})).then(function(childNode) {
     // Everything is ok, it worked!
     // When you append a node, you can either give as argument a tree or hookable tree.
@@ -210,7 +210,7 @@ hookableTree.append(Tree.tree({ name: 'spirou'})).then(function(childNode) {
 });
 ```
 
-```
+```javascript
 hookableTree.find('/dupuis').remove().then(function(dupuisParent) {
     // Everything is ok, it worked!
 }, function(err) {
@@ -218,7 +218,7 @@ hookableTree.find('/dupuis').remove().then(function(dupuisParent) {
 });
 ```
 
-```
+```javascript
 hookableTree.find('/dupuis/prunelle').moveTo(hookableTree).then(function(prunelle) {
     // Everything is ok, it worked!
 }, function(err) {
@@ -226,7 +226,7 @@ hookableTree.find('/dupuis/prunelle').moveTo(hookableTree).then(function(prunell
 });
 ```
 
-```
+```javascript
 hookableTree.find('/dupuis/prunelle').clone().then(function(clonedPrunelle) {
     // Everything is ok, it worked!
 }, function(err) {
