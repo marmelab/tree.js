@@ -185,5 +185,212 @@
                 expect(i).toBe(30); // ensure that listeners are called with the right order
             });
         });
+
+        it ('should share hook listeners will all sub tree', function() {
+            var i = 0;
+
+            hookTree.registerListener(hookTree.HOOK_PRE_REMOVE, function(next, node) {
+                i += 5;
+                next();
+            });
+
+            hookTree.registerListener(hookTree.HOOK_POST_REMOVE, function(next, node) {
+                i *= 2;
+                next();
+            });
+
+            var result;
+            runs(function() {
+                hookTree.find('/toto/tata').remove().then(function() {
+                    result = 'resolved';
+                }, function() {
+                    result = 'rejected';
+                });
+            });
+
+            waitsFor(function() {
+                return !!result;
+            });
+
+            runs(function() {
+                expect(result).toEqual('resolved');
+                expect(i).toBe(10); // ensure that listeners are called with the right order
+            });
+        });
+
+        it ('should share hook listeners will all up tree', function() {
+            var i = 0;
+
+            var childNode = hookTree.find('/toto/tata');
+            childNode.registerListener(childNode.HOOK_PRE_REMOVE, function(next, node) {
+                i += 6;
+                next();
+            });
+
+            childNode.registerListener(childNode.HOOK_POST_REMOVE, function(next, node) {
+                i *= 3;
+                next();
+            });
+
+            var result;
+            runs(function() {
+                hookTree.find('/toto').remove().then(function() {
+                    result = 'resolved';
+                }, function() {
+                    result = 'rejected';
+                });
+            });
+
+            waitsFor(function() {
+                return !!result;
+            });
+
+            runs(function() {
+                expect(result).toEqual('resolved');
+                expect(i).toBe(18); // ensure that listeners are called with the right order
+            });
+        });
+
+        it ('should share hook listeners will all appended tree', function() {
+            var i = 0;
+
+            var childNode = Tree.tree({ name: 'plop'});
+            hookTree.registerListener(hookTree.HOOK_PRE_REMOVE, function(next, node) {
+                i += 7;
+                next();
+            });
+
+            hookTree.registerListener(hookTree.HOOK_POST_REMOVE, function(next, node) {
+                i *= 2;
+                next();
+            });
+
+            var result;
+            runs(function() {
+                hookTree.append(childNode).then(function(childNode) {
+                    childNode.remove().then(function() {
+                        result = 'resolved';
+                    }, function() {
+                        result = 'rejected';
+                    });
+                }, function() {
+                    result = 'rejected';
+                });
+            });
+
+            waitsFor(function() {
+                return !!result;
+            });
+
+            runs(function() {
+                expect(result).toEqual('resolved');
+                expect(i).toBe(14); // ensure that listeners are called with the right order
+            });
+        });
+
+        it ('should keep hook listeners when we append a hookable tree', function() {
+            var i = 0;
+
+            var childNode = Tree.hookable(Tree.tree({ name: 'plop'}));
+            childNode.registerListener(childNode.HOOK_PRE_REMOVE, function(next, node) {
+                i += 7;
+                next();
+            });
+
+            hookTree.registerListener(hookTree.HOOK_POST_REMOVE, function(next, node) {
+                i *= 2;
+                next();
+            });
+
+            var result;
+            runs(function() {
+                hookTree.append(childNode).then(function(childNode) {
+                    childNode.remove().then(function() {
+                        result = 'resolved';
+                    }, function() {
+                        result = 'rejected';
+                    });
+                }, function() {
+                    result = 'rejected';
+                });
+            });
+
+            waitsFor(function() {
+                return !!result;
+            });
+
+            runs(function() {
+                expect(result).toEqual('resolved');
+                expect(i).toBe(14); // ensure that listeners are called with the right order
+            });
+        });
+
+        it ('should trigger error hook when an error occured', function() {
+            var i = 0;
+
+            hookTree.registerListener(hookTree.HOOK_PRE_REMOVE, function(next, node) {
+                i += 7;
+                next('oups');
+            });
+
+            hookTree.registerListener(hookTree.HOOK_ERROR_REMOVE, function(next, node) {
+                i *= 2;
+                next();
+            });
+
+            var result;
+            runs(function() {
+                hookTree.remove().then(function(childNode) {
+                    result = 'resolved';
+                }, function(err) {
+                    result = err;
+                });
+            });
+
+            waitsFor(function() {
+                return !!result;
+            });
+
+            runs(function() {
+                expect(result).toEqual('oups');
+                expect(i).toBe(14); // ensure that listeners are called with the right order
+            });
+        });
+
+        it ('should trigger error hook when an error occured because of an exception', function() {
+            var i = 0;
+
+            hookTree.registerListener(hookTree.HOOK_PRE_REMOVE, function(next, node) {
+                i += 7;
+                throw new Error('oups');
+            });
+
+            hookTree.registerListener(hookTree.HOOK_ERROR_REMOVE, function(next, node) {
+                i *= 2;
+                next();
+            });
+
+            var result;
+            runs(function() {
+                hookTree.remove().then(function(childNode) {
+                    result = 'resolved';
+                }, function(err) {
+                    result = err.message;
+                });
+            });
+
+            waitsFor(function() {
+                return !!result;
+            });
+
+            runs(function() {
+                expect(result).toEqual('oups');
+                expect(i).toBe(14); // ensure that listeners are called with the right order
+            });
+        });
+
+        it('should provide its factory',function() {
+            expect(hookTree.factory()).toBe(Tree.hookable);
+        });
     });
 })();

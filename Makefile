@@ -5,8 +5,8 @@ install:
 	bower install
 	npm install
 
-test-spec:
+test-spec: build
 	CHROME_BIN=`which chromium-browser` karma start test/karma.conf.js --single-run
 
-build:
+build: src/*
 	cd build && r.js -o build.js

@@ -1,7 +1,7 @@
 Tree.js
 =======
 
-Tree.js is Javascript librairy to build and manipulate hookable tree.
+Tree.js is Javascript librairy to build and manipulate hookable trees.
 
 # Installation
 
@@ -10,6 +10,16 @@ It is available with bower:
 ```
 bower install tree.js
 ```
+
+Then add to your html layout:
+
+```html
+<script type="text/javascript" src="/path/to/bower_components/tree.js/tree.min.js"></script>
+<!-- If you want to build hookable tree (see below) -->
+<script type="text/javascript" src="/path/to/bower_components/q/q.js"></script>
+```
+
+You can also use it with require as an AMD module.
 
 Usage
 -----
@@ -184,25 +194,50 @@ hookableTree.registerListener(hookableTree.HOOK_PRE_APPEND, function(next, newNo
 Because of hooks `append`, `remove`, `move`, `clone` will return promise, see this example:
 
 ```
-hookableTree.append(Tree.tree({ name: 'spirou'})).then(function() {
+hookableTree.append(Tree.tree({ name: 'spirou'})).then(function(childNode) {
     // Everything is ok, it worked!
+    // When you append a node, you can either give as argument a tree or hookable tree.
+    // If it is a hookable tree, its hook listeners will added to the parent tree.
 }, function(err) {
    // An error occured or a hook listener failed
 });
+```
 
+```
+hookableTree.find('/dupuis').remove().then(function(dupuisParent) {
+    // Everything is ok, it worked!
+}, function(err) {
+    // An error occured or a hook listener failed
+});
+```
+
+```
+hookableTree.find('/dupuis/prunelle').moveTo(hookableTree).then(function(prunelle) {
+    // Everything is ok, it worked!
+}, function(err) {
+    // An error occured or a hook listener failed
+});
+```
+
+```
+hookableTree.find('/dupuis/prunelle').clone().then(function(clonedPrunelle) {
+    // Everything is ok, it worked!
+}, function(err) {
+    // An error occured or a hook listener failed
+});
 ```
 
 Build
 ------
 
-To rebuild the minified javascript you must run: `make build --always-make`.
+To rebuild the minified javascript you must run: `make build`.
 
 Tests
 -----
 
 Install dependencies: `make install`.
 
-The library is unit tested. The tests are run on the minified javascript so you need to first build the library and the run: `make test-spec`.
+The library is unit tested. To run them do: `make test-spec`.
 
 Contributing
 ------------

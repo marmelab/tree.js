@@ -50,18 +50,77 @@ define(function(require) {
         }
 
         var model = {
-            HOOK_PRE_APPEND: 0,
-            HOOK_POST_APPEND: 1,
+            /**
+             * Triggered before an append
+             * @type {Number}
+             */
+            HOOK_PRE_APPEND:   0,
+
+            /**
+             * Triggered after an append
+             * @type {Number}
+             */
+            HOOK_POST_APPEND:  1,
+
+            /**
+             * Triggered if an error occured during an append
+             * @type {Number}
+             */
             HOOK_ERROR_APPEND: 2,
-            HOOK_PRE_REMOVE: 10,
-            HOOK_POST_REMOVE: 11,
+
+            /**
+             * Triggered before a remove
+             * @type {Number}
+             */
+            HOOK_PRE_REMOVE:   10,
+
+            /**
+             * Triggered after a remove
+             * @type {Number}
+             */
+            HOOK_POST_REMOVE:  11,
+
+            /**
+             * Triggered if an error occured during a remove
+             * @type {Number}
+             */
             HOOK_ERROR_REMOVE: 12,
-            HOOK_PRE_MOVE: 20,
-            HOOK_POST_MOVE: 21,
-            HOOK_ERROR_MOVE: 22,
-            HOOK_PRE_CLONE: 30,
-            HOOK_POST_CLONE: 31,
-            HOOK_ERROR_CLONE: 32,
+
+            /**
+             * Triggered before a move
+             * @type {Number}
+             */
+            HOOK_PRE_MOVE:     20,
+
+            /**
+             * Triggered after a move
+             * @type {Number}
+             */
+            HOOK_POST_MOVE:    21,
+
+            /**
+             * Triggered if an error occured during a move
+             * @type {Number}
+             */
+            HOOK_ERROR_MOVE:   22,
+
+            /**
+             * Triggered before a clone
+             * @type {Number}
+             */
+            HOOK_PRE_CLONE:    30,
+
+            /**
+             * Triggered after a clone
+             * @type {Number}
+             */
+            HOOK_POST_CLONE:   31,
+
+            /**
+             * Triggered if an error occured during a clone
+             * @type {Number}
+             */
+            HOOK_ERROR_CLONE:  32,
 
             /**
              * Will register a hook listener for a specific hook
@@ -103,6 +162,21 @@ define(function(require) {
             append: function(childNode) {
                 return dispatch(model.HOOK_PRE_APPEND, [childNode])
                     .then(function() {
+                        if (typeof(childNode.tree) === "function" && typeof(childNode.listeners) === "function") {
+                            // That means childNode is a hookable tree and not just a tree
+                            // We must keep its listeners
+                            var childNodeListeners = childNode.listeners();
+                            for (var i in childNodeListeners) {
+                                if (childNodeListeners.hasOwnProperty(i)) {
+                                    for (var j in childNodeListeners[i]) {
+                                        if (childNodeListeners[i].hasOwnProperty(j)) {
+                                            model.registerListener(i, childNodeListeners[i][j]);
+                                        }
+                                    }
+                                }
+                            }
+                            return call('append', [childNode.tree()]);
+                        }
                         return call('append', [childNode]);
                     })
                     .then(function(result) {
@@ -226,6 +300,14 @@ define(function(require) {
              */
             tree: function() {
                 return tree;
+            },
+
+            /**
+             * Will return all the hook listeners
+             * @return {array} The listeners
+             */
+            listeners: function() {
+                return listeners;
             }
         };
 
@@ -245,6 +327,8 @@ define(function(require) {
             var deferred = config.promiseFactory.defer(),
             cursor = 0;
 
+            data = data || [];
+
             if (listeners[hook]) {
 
                 // this function is give to each listener and execute the next one if no error is triggered
@@ -257,7 +341,11 @@ define(function(require) {
                     // all is good to continue we increment the cursor to retrieve the next hook listener
                     cursor++;
                     if (listeners[hook].length > cursor) {
-                        return listeners[hook][cursor].apply(tree, data);
+                        try {
+                            return listeners[hook][cursor].apply(tree, data);
+                        } catch (e) {
+                            return deferred.reject(e);
+                        }
                     }
 
                     // we reach the end of the hook listeners chain, resolve the promise
@@ -268,7 +356,11 @@ define(function(require) {
 
                 // call the first hook listener of the chain
                 if (listeners[hook].length > cursor) {
-                    listeners[hook][cursor].apply(tree, data);
+                    try {
+                        listeners[hook][cursor].apply(tree, data);
+                    } catch (e) {
+                        deferred.reject(e);
+                    }
                 }
             } else {
                 // no hook listeners found
