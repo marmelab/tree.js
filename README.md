@@ -138,6 +138,17 @@ var children = myTree.find('/dupuis').children();
 children[0].name(); // prunelle
 ```
 
+#### Get a node visitor
+
+In order to execute a callback on each node of the tree, you can use a visitor:
+
+```javascript
+var visitor = myTree.visitor();
+visitor(function(node) {
+    // you can now interact with each node
+});
+```
+
 ### Work with hooks
 
 To work with hooks, you first need to add hook capacities to your tree:

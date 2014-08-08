@@ -308,6 +308,14 @@ define(function(require) {
              */
             listeners: function() {
                 return listeners;
+            },
+
+            /**
+             * Simple proxy for `visitor` method on the wrapped tree
+             * @return {string} The visitor
+             */
+            visitor: function() {
+                return call('visitor');
             }
         };
 

@@ -122,5 +122,38 @@
         it('should provide its factory',function() {
             expect(tree.factory()).toBe(Tree.tree);
         });
+
+        it('should provide visitor', function() {
+            var i = 0,
+                flags = {
+                    root: false,
+                    toto: false,
+                    tata: false,
+                    titi: false
+                };
+            var spy = function(node) {
+                i++;
+
+                if (node === tree.data()) {
+                    flags.root = true;
+                } else if (node === tree.find('/toto').data()) {
+                    flags.toto = true;
+                } else if (node === tree.find('/toto/tata').data()) {
+                    flags.tata = true;
+                } else if (node === tree.find('/toto/titi').data()) {
+                    flags.titi = true;
+                }
+            };
+
+            var visitor = tree.visitor();
+
+            visitor(spy);
+
+            expect(i).toBe(4);
+            expect(flags.root).toBe(true);
+            expect(flags.toto).toBe(true);
+            expect(flags.tata).toBe(true);
+            expect(flags.titi).toBe(true);
+        });
     });
 })();

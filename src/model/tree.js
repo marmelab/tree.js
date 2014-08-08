@@ -227,6 +227,29 @@ define(function(require) {
              */
             factory: function() {
                 return tree;
+            },
+
+            /**
+             * Will return a visitor to execute a callback on each node
+             * @return {Function} The visitor
+             */
+            visitor: function() {
+                return function (cb) {
+                    var search = function (rootTree) {
+                        if (rootTree.children) {
+                            for (var child in rootTree.children) {
+                                if (rootTree.children.hasOwnProperty(child) &&
+                                    rootTree.children[child]) {
+                                    search(rootTree.children[child]);
+                                }
+                            }
+                        }
+
+                        cb(rootTree);
+                    };
+
+                    search(config.data);
+                };
             }
         };
 
