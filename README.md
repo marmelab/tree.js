@@ -1,7 +1,7 @@
 Tree.js
 =======
 
-Tree.js is Javascript librairy to build and manipulate hookable trees.
+Tree.js is a JavaScript library to build and manipulate hookable trees.
 
 # Installation
 
@@ -11,7 +11,7 @@ It is available with bower:
 bower install tree.js
 ```
 
-Then add to your html layout:
+Then add the retrieved files to your HTML layout:
 
 ```html
 <script type="text/javascript" src="/path/to/bower_components/tree.js/tree.min.js"></script>
@@ -19,7 +19,7 @@ Then add to your html layout:
 <script type="text/javascript" src="/path/to/bower_components/q/q.js"></script>
 ```
 
-You can also use it with require as an AMD module.
+You can also use it with [RequireJS](http://requirejs.org/)  as an AMD module.
 
 Usage
 -----
@@ -63,11 +63,11 @@ var lebrac = myTree.find('/dupuis/prunelle/lebrac');
 
 // or
 
-lebrac = myTree.find('/dupuis').find('/prunelle/lebrac');
+var lebrac = myTree.find('/dupuis').find('/prunelle/lebrac');
 
 // or
 
-lebrac = myTree.find('/dupuis').find('/prunelle').find('/lebrac');
+var lebrac = myTree.find('/dupuis').find('/prunelle').find('/lebrac');
 ```
 
 #### Get the raw data of a node
@@ -110,11 +110,7 @@ dupuis.parent(); // undefined
 ```javascript
 lebrac.append(Tree.tree({
     name: 'paper',
-    children: [
-        {
-            name: 'pen'
-        }
-    ]
+    children: [{ name: 'pen' }]
 }));
 
 lebrac.find('/paper/pen');
@@ -177,21 +173,21 @@ To register a hook you need to call `registerListener(string hook, function list
 
 ```
 hookableTree.registerListener(hookableTree.HOOK_PRE_APPEND, function(next, newNode) {
-    // I am a hook listener, I wiil be triggered before any append operation
+    // I am a hook listener, I will be triggered before any append operation.
 
-    // The arguments other than the next callback are not always the same depending on the hook
-    // The context of a hook is the tree
+    // The arguments other than the next callback are not always the same depending on the hook.
+    // Hook context is the tree.
 
-    this; // will be our myTree
+    this; // will be our tree
 
-    // When I am done I MUST call the next callback.
-    // With no argument if everything is ok.
-    // With an error if something goes wrong and I want to prevent the append to be completed: next('error').
+    // When I am done I MUST call the next callback:
+    //   - with no argument if everything is OK,
+    //   - with an error if something goes wrong and I want to prevent the append to be completed: next('error').
     next();
 });
 ```
 
-Because of hooks `append`, `remove`, `move`, `clone` will return promise, see this example:
+Because of hooks, `append`, `remove`, `move`, `clone` will return promise, as show in this example:
 
 ```
 hookableTree.append(Tree.tree({ name: 'spirou'})).then(function(childNode) {
@@ -230,19 +226,21 @@ hookableTree.find('/dupuis/prunelle').clone().then(function(clonedPrunelle) {
 Build
 ------
 
-To rebuild the minified javascript you must run: `make build`.
+To rebuild the minified JavaScript you must run: `make build`.
 
 Tests
 -----
+Install dependencies and run the unit tests:
 
-Install dependencies: `make install`.
-
-The library is unit tested. To run them do: `make test-spec`.
+```
+make install
+make test-spec
+```
 
 Contributing
 ------------
 
-All contributions are welcome and must pass the tests. If you add a new feature, write tests for it.
+All contributions are welcome and must pass the tests. If you add a new feature, please write tests for it.
 
 License
 -------
