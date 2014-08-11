@@ -167,18 +167,18 @@ There are 12 hooks available:
 
 | Hook              | Description                                                        |
 | ----------------: |:-------------------------------------------------------------------|
-| HOOK_PRE_APPEND   | Trigger when `append` is called and before applying it on the tree |
-| HOOK_POST_APPEND  | Trigger when `append` is called and after applying it on the tree  |
-| HOOK_ERROR_APPEND | Trigger when `append` is called and an error occured               |
-| HOOK_PRE_REMOVE   | Trigger when `remove` is called and before applying it on the tree |
-| HOOK_POST_REMOVE  | Trigger when `remove` is called and after applying it on the tree  |
-| HOOK_ERROR_REMOVE | Trigger when `remove` is called and an error occured               |
-| HOOK_PRE_MOVE     | Trigger when `moveTo` is called and before applying it on the tree |
-| HOOK_POST_MOVE    | Trigger when `moveTo` is called and after applying it on the tree  |
-| HOOK_ERROR_MOVE   | Trigger when `moveTo` is called and an error occured               |
-| HOOK_PRE_CLONE    | Trigger when `clone` is called and before applying it on the tree  |
-| HOOK_POST_CLONE   | Trigger when `clone` is called and after applying it on the tree   |
-| HOOK_ERROR_CLONE  | Trigger when `clone` is called and an error occured                |
+| HOOK_PRE_APPEND   | Triggered when `append` is called and before applying it on the tree |
+| HOOK_POST_APPEND  | Triggered when `append` is called and after applying it on the tree  |
+| HOOK_ERROR_APPEND | Triggered when `append` is called and an error occured               |
+| HOOK_PRE_REMOVE   | Triggered when `remove` is called and before applying it on the tree |
+| HOOK_POST_REMOVE  | Triggered when `remove` is called and after applying it on the tree  |
+| HOOK_ERROR_REMOVE | Triggered when `remove` is called and an error occured               |
+| HOOK_PRE_MOVE     | Triggered when `moveTo` is called and before applying it on the tree |
+| HOOK_POST_MOVE    | Triggered when `moveTo` is called and after applying it on the tree  |
+| HOOK_ERROR_MOVE   | Triggered when `moveTo` is called and an error occured               |
+| HOOK_PRE_CLONE    | Triggered when `clone` is called and before applying it on the tree  |
+| HOOK_POST_CLONE   | Triggered when `clone` is called and after applying it on the tree   |
+| HOOK_ERROR_CLONE  | Triggered when `clone` is called and an error occured                |
 
 To register a hook you need to call `registerListener(string hook, function listener)`:
 
