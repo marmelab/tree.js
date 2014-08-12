@@ -36,7 +36,7 @@ var myTree = Tree.tree({
             name: 'dupuis',
             children: [
                 {
-                    name: 'prunelle'
+                    name: 'prunelle',
                     children: [
                         {
                             name: 'lebrac',
@@ -51,7 +51,6 @@ var myTree = Tree.tree({
                 }
             ]
         }
-    }
     ]
 });
 ```
