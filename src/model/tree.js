@@ -188,7 +188,7 @@ define(function(require) {
              * @return {mixed|tree}   The value of the attribute or the current node
              */
             attr: function(key, value) {
-                if (!value) {
+                if (value === undefined) {
                     return config.data[key];
                 }
 
