@@ -266,7 +266,7 @@ define(function(require) {
              */
             attr: function(key, value) {
                 var result = call('attr', value !== undefined ? [key, value] : [key]);
-                return result && value ? hookable(result, listeners, config.promiseFactory) : result;
+                return result !==undefined && value !== undefined ? hookable(result, listeners, config.promiseFactory) : result;
             },
 
             /**
