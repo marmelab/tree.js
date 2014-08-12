@@ -265,7 +265,7 @@ define(function(require) {
              * @return {mixed|hookable} The tree on which `attr` is called
              */
             attr: function(key, value) {
-                var result = call('attr', value ? [key, value] : [key]);
+                var result = call('attr', value !== undefined ? [key, value] : [key]);
                 return result && value ? hookable(result, listeners, config.promiseFactory) : result;
             },
 
