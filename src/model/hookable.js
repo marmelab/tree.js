@@ -212,6 +212,9 @@ define(function(require) {
             moveTo: function(destNode) {
                 return dispatch(model.HOOK_PRE_MOVE, [destNode])
                     .then(function() {
+                        if (typeof(destNode.tree) === "function" && typeof(destNode.listeners) === "function") {
+                            return call('moveTo', [destNode.tree()]);
+                        }
                         return call('moveTo', [destNode]);
                     })
                     .then(function (result) {
