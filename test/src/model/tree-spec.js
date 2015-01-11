@@ -130,8 +130,12 @@
                     toto: false,
                     tata: false,
                     titi: false
-                };
-            var spy = function(node) {
+                },
+                node;
+
+            var spy = function(subTree) {
+                node = subTree.data()
+
                 i++;
 
                 if (node === tree.data()) {
