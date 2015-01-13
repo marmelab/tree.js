@@ -245,7 +245,7 @@ define(function(require) {
                             }
                         }
 
-                        cb(rootTree);
+                        cb(tree(rootTree));
                     };
 
                     search(config.data);
