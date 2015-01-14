@@ -1,6 +1,9 @@
 {
   "name": "tree.js",
   "repository": "https://github.com/marmelab/tree.js",
+  "scripts": {
+      "test": "make test-spec"
+  },
   "devDependencies": {
     "karma": "0.12.14",
     "karma-chrome-launcher": "0.1.3",
