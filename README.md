@@ -1,9 +1,8 @@
-Tree.js
-=======
+# Tree.js [![Build Status](https://api.travis-ci.org/marmelab/tree.js.svg?branch=master)](https://travis-ci.org/marmelab/tree.js)
 
 Tree.js is a JavaScript library to build and manipulate hookable trees.
 
-# Installation
+## Installation
 
 It is available with bower:
 
@@ -21,8 +20,7 @@ Then add the retrieved files to your HTML layout:
 
 You can also use it with [RequireJS](http://requirejs.org/)  as an AMD module.
 
-Usage
------
+## Usage
 
 ### Simple tree
 
@@ -233,13 +231,12 @@ hookableTree.find('/dupuis/prunelle').clone().then(function(clonedPrunelle) {
 });
 ```
 
-Build
-------
+## Build
 
 To rebuild the minified JavaScript you must run: `make build`.
 
-Tests
------
+## Tests
+
 Install dependencies and run the unit tests:
 
 ```
@@ -247,12 +244,10 @@ make install
 make test-spec
 ```
 
-Contributing
-------------
+## Contributing
 
 All contributions are welcome and must pass the tests. If you add a new feature, please write tests for it.
 
-License
--------
+## License
 
 This application is available under the MIT License, courtesy of [marmelab](http://marmelab.com).
