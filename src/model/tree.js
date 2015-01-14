@@ -250,6 +250,20 @@ define(function(require) {
 
                     search(config.data);
                 };
+            },
+
+            /**
+             * Will serialize the tree by using JSON.stringify with custom replacer
+             * @return {string} The serialized tree
+             */
+            stringify: function() {
+                return JSON.stringify(data, function replacer(key, value) {
+                    if (key === '_parent') {
+                        return undefined;
+                    }
+
+                    return value;
+                });
             }
         };
 
