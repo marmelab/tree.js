@@ -155,6 +155,10 @@
             hookTree.visitor();
             expect(tree.visitor).toHaveBeenCalled();
 
+            spyOn(tree, 'stringify');
+            hookTree.stringify();
+            expect(tree.stringify).toHaveBeenCalled();
+
         });
 
         it ('should call pre hook listeners before calling a method and post hooks listeners after', function() {
