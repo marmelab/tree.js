@@ -319,6 +319,14 @@ define(function(require) {
              */
             visitor: function() {
                 return call('visitor');
+            },
+
+            /**
+             * Simple proxy for `stringify` method on the wrapped tree
+             * @return {string} The serialized tree
+             */
+            stringify: function() {
+                return call('stringify');
             }
         };
 

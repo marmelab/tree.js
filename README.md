@@ -146,6 +146,14 @@ visitor(function(node) {
 });
 ```
 
+#### Stringify a node
+
+On any node you can call `stringify` to serialize it. Internally it will use JSON.stringify with custom replacer to avoid circular references because of the `_parent` private property:
+
+```javascript
+myTree.stringify()
+```
+
 ### Work with hooks
 
 To work with hooks, you first need to add hook capacities to your tree:

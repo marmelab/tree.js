@@ -135,7 +135,6 @@
 
             var spy = function(subTree) {
                 node = subTree.data()
-
                 i++;
 
                 if (node === tree.data()) {
@@ -158,6 +157,11 @@
             expect(flags.toto).toBe(true);
             expect(flags.tata).toBe(true);
             expect(flags.titi).toBe(true);
+        });
+
+        it('should correctly serialize the tree when stringify is called', function() {
+            var serialized = tree.stringify();
+            expect(serialized).toBe('{"name":"root","children":[{"name":"toto","children":[{"name":"tata","children":[]},{"name":"titi","children":[]}]}]}');
         });
     });
 })();
