@@ -322,7 +322,7 @@ define(function(require) {
             },
 
             /**
-             * Simple proxy for `stringy` method on the wrapped tree
+             * Simple proxy for `stringify` method on the wrapped tree
              * @return {string} The serialized tree
              */
             stringify: function() {
