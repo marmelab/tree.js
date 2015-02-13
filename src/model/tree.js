@@ -85,14 +85,18 @@ define(function(require) {
              * @param  {tree} childNode The node to append
              * @return {tree}           The child node
              */
-            append: function(childNode) {
+            append: function(childNode, insertIndex) {
                 if (!config.data.children) {
                     config.data.children = [];
                 }
 
                 var childNodeData = childNode.data();
                 setParent(childNodeData, config.data);
-                config.data.children.push(childNodeData);
+                if (insertIndex != undefined) {
+                    config.data.children.splice(insertIndex, 0, childNodeData);
+                } else {
+                    config.data.children.push(childNodeData);
+                }
 
                 return tree(childNodeData);
             },
@@ -118,7 +122,7 @@ define(function(require) {
              * @param  {tree} destNode           The future parent of the tree
              * @return {undefined|tree}          The moved tree
              */
-            moveTo: function(destNode) {
+            moveTo: function(destNode, insertIndex) {
                 var parent = model.parent();
 
                 if (!parent) {
@@ -126,7 +130,7 @@ define(function(require) {
                 }
 
                 parent.find('/' + config.data.name).remove();
-                destNode.append(model);
+                destNode.append(model, insertIndex);
 
                 return model;
             },
