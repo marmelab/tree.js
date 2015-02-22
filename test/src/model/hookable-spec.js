@@ -386,14 +386,14 @@
             });
         });
 
-        it('should wait for promise to be resolved or rejected when a listener returns one', function() {
+        it('should wait for promise to be resolved when a listener returns a resolved one', function() {
             var i = 0;
 
             hookTree.registerListener(hookTree.HOOK_PRE_REMOVE, function(node) {
                 i += 7;
 
                 return Q().then(function() {
-                    i *= 3;
+                    i += 3;
                 });
             });
 
@@ -416,7 +416,39 @@
 
             runs(function() {
                 expect(result).toEqual('resolved');
-                expect(i).toBe(42); // ensure that listeners are called with the right order
+                expect(i).toBe(20); // ensure that listeners are called with the right order
+            });
+        });
+
+        it('should wait for promise to be resolved when a listener returns a rejected one', function() {
+            var i = 0;
+
+            hookTree.registerListener(hookTree.HOOK_PRE_REMOVE, function(node) {
+                i += 7;
+
+                return Q.reject('it fails');
+            });
+
+            hookTree.registerListener(hookTree.HOOK_PRE_REMOVE, function(node) {
+                i *= 2;
+            });
+
+            var result;
+            runs(function() {
+                hookTree.remove().then(function(childNode) {
+                    result = 'resolved';
+                }, function(err) {
+                    result = err;
+                });
+            });
+
+            waitsFor(function() {
+                return !!result;
+            });
+
+            runs(function() {
+                expect(result).toEqual('it fails');
+                expect(i).toBe(7); // ensure that listeners are called with the right order
             });
         });
 
