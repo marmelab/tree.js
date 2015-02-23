@@ -15,7 +15,8 @@ define(function(require) {
         var config = {
             // By default we use Q library to handle promise but it can be
             // changed by calling `promiseFactory(mixed newPromiseFactory)`
-            promiseFactory: promiseFactory || window.Q
+            promiseFactory: promiseFactory || window.Q,
+            timeout: 30000
         };
 
         listeners = listeners || {};
@@ -333,60 +334,30 @@ define(function(require) {
         /**
          * The dispatch is used to trigger a hook.
          * When a hook is triggered, we must run all its listeners synchronously
-         * even if they perform async actions.
-         * To achieve that, we give to each hook listener a `next` callback which must be called
-         * when the listener is completed.
-         * If a listener want to report an error and prevent the operation to be executed (for HOOK_PRE_*),
-         * it must call `next` callback with an argument
+         * They can return a promise if they perform asynchronous tasks
          * @param  {string} hook The hook to trigger
          * @param  {array}  data The data to pass to the hook with the next callback
          * @return promise A promise which is resolved if all gone without error, rejected otherwise.
          */
         function dispatch(hook, data) {
-            var deferred = config.promiseFactory.defer(),
-            cursor = 0;
-
-            data = data || [];
-
-            if (listeners[hook]) {
-
-                // this function is give to each listener and execute the next one if no error is triggered
-                var next = function(err) {
-                    // the current listener returned an error, reject the promise and stop the hook listeners chain
-                    if (err) {
-                        return deferred.reject(err);
-                    }
-
-                    // all is good to continue we increment the cursor to retrieve the next hook listener
-                    cursor++;
-                    if (listeners[hook].length > cursor) {
-                        try {
-                            return listeners[hook][cursor].apply(tree, data);
-                        } catch (e) {
-                            return deferred.reject(e);
-                        }
-                    }
-
-                    // we reach the end of the hook listeners chain, resolve the promise
-                    deferred.resolve(hook);
-                };
-
-                data.unshift(next);
-
-                // call the first hook listener of the chain
-                if (listeners[hook].length > cursor) {
-                    try {
-                        listeners[hook][cursor].apply(tree, data);
-                    } catch (e) {
-                        deferred.reject(e);
-                    }
-                }
-            } else {
-                // no hook listeners found
-                deferred.resolve();
+            if (!listeners[hook]) {
+                return config.promiseFactory.resolve();
             }
 
-            return deferred.promise;
+            return listeners[hook].reduce(function(promise, listener) {
+                return promise.then(function() {
+                    var result = config
+                        .promiseFactory.fcall(function() {
+                            return listener.apply(tree, data);
+                        });
+
+                    if (config.timeout > 0) {
+                        result = result.timeout(config.timeout);
+                    }
+
+                    return result;
+                })
+            }, config.promiseFactory());
         }
 
         configurable(model, config);

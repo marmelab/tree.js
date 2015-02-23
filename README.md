@@ -164,7 +164,9 @@ var hookableTree = Tree.hookable(myTree);
 
 Everything explained above is still true but the hookable operations will now return promises!
 
-Because of that you need to include into your page `Q` library. Otherwise you can specify another promises library by calling: `hookableTree.promiseFactory(YOUR_FACTORY)`.
+Because of that you need to include into your page `Q` library. Otherwise you can specify another promises library by calling: `hookableTree.promiseFactory(YOUR_FACTORY)`. It must expose the same API than `Q`.
+
+You can configure the timeout used for each listener by calling `hookableTree.timeout(30000)`. Set it to `0` to disable it, default to `30000`.
 
 #### Register a hook listener
 
@@ -188,18 +190,15 @@ There are 12 hooks available:
 To register a hook you need to call `registerListener(string hook, function listener)`:
 
 ```javascript
-hookableTree.registerListener(hookableTree.HOOK_PRE_APPEND, function(next, newNode) {
+hookableTree.registerListener(hookableTree.HOOK_PRE_APPEND, function(newNode) {
     // I am a hook listener, I will be triggered before any append operation.
 
-    // The arguments other than the next callback are not always the same depending on the hook.
+    // The arguments are not always the same depending on the hook.
     // Hook context is the tree.
 
     this; // will be our tree
 
-    // When I am done I MUST call the next callback:
-    //   - with no argument if everything is OK,
-    //   - with an error if something goes wrong and I want to prevent the append to be completed: next('error').
-    next();
+    // If you need to perform asynchronous operation, just return a promise.
 });
 ```
 
