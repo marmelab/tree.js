@@ -1,6 +1,16 @@
 {
   "name": "tree.js",
+  "version": "1.1.0",  
   "repository": "https://github.com/marmelab/tree.js",
+  "authors": [
+    "Robin Bressan <robin@marmelab.com>"
+  ],
+  "description": "Javascript librairy to build and manipulate hookable trees.",
+  "main": "tree.min.js",
+  "keywords": [
+    "tree"
+  ],
+  "license": "MIT",
   "scripts": {
       "test": "make test-spec"
   },
