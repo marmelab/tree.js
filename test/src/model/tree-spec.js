@@ -104,6 +104,14 @@
             expect(tree.find('/toto/titi')).toBeUndefined();
         });
 
+        it('should reorder a node', function() {
+            var toto = tree.find('/toto').data();
+            expect(toto.children[0].name).toEqual("tata");
+            var titi = tree.find('/toto/titi').moveTo(tree.find('/toto'), 0);
+            expect(toto.children[0].name).toEqual("titi");
+            expect(toto.children[1].name).toEqual("tata");
+        });
+
         it('should clone a node', function() {
             var toto = tree.find('/toto').clone();
             expect(toto.data()).not.toBe(tree.find('/toto').data());

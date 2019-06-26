@@ -137,6 +137,16 @@ var lagaffe = myTree.find('/dupuis/prunelle/lagaffe').moveTo(myTree.find('/dupui
 lagaffe.path(); // /dupuis/lagaffe
 ```
 
+#### Reorder a node
+
+```javascript
+var prunelle = myTree.find('/dupuis/prunelle');
+prunelle.children[0].name; // lebrac
+var lagaffe = myTree.find('/dupuis/prunelle/lagaffe').moveTo(myTree.find('/dupuis'), 0);
+prunelle.children[0].name; // lagaffe
+prunelle.children[1].name; // lebrac
+```
+
 #### Get the children of a node
 
 ```javascript
